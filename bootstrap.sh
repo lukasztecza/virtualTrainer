@@ -3,7 +3,7 @@
 # Set versions
 APACHE_VERSION=2.4.7*
 HOST=localhost
-PORT=5678
+PORT=1234
 MYSQL_VERSION=5.5
 MYSQL_ROOT_PASSWORD=pass
 MYSQL_USER=user
@@ -99,3 +99,4 @@ if  [ -d src ]; then
 else
     echo "[Info] Create symfony project running: composer create-project symfony/framework-standard-edition virtualTrainer \"3.2.*\""
 fi
+echo "[Info] Your project is available at $HOST:$PORT"
