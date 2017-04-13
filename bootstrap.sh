@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
-# Set versions
+# Set versions and variables
 APACHE_VERSION=2.4.7*
 HOST=localhost
+# PORT same as exposed in Vagrantfile
 PORT=8080
 MYSQL_VERSION=5.5
 MYSQL_ROOT_PASSWORD=pass
@@ -31,6 +32,9 @@ if ! [ -L /var/www/html ]; then
     mkdir /var/www
     ln -fs /vagrant /var/www/html
 fi
+
+# Enable mod_rewrite for apache
+a2enmod rewrite
 
 # Set ServerName to fix "AH00558: apache2: Could not reliably determine..." error
 if ! fgrep ServerName /etc/apache2/apache2.conf; then
@@ -62,11 +66,48 @@ sed -i "s/display_errors = .*/display_errors = On/" /etc/php/"$PHP_VERSION"/apac
 # Allow usage of .htaccess files inside /var/www/html
 if ! fgrep "/var/www/html" /etc/apache2/apache2.conf; then
     cat >> /etc/apache2/apache2.conf <<EOL
-<Directory /var/www/html>
-    Options Indexes FollowSymLinks
-    AllowOverride All
-    Require all granted
-</Directory>
+# Listen and configure virtual host
+Listen $PORT
+<VirtualHost *:$PORT>
+    # Not used as we expose port to the host machine
+    # ServerName virtualtrainer.localhost
+    # ServerAlias www.virtualtrainer.localhost
+
+    # Set document root and block .htaccess files
+    DocumentRoot /var/www/html/web
+    <Directory /var/www/html/web>
+        Require all granted
+        AllowOverride None
+        Order Allow,Deny
+        Allow from All
+
+        # Point to proper front controller
+        <IfModule mod_rewrite.c>
+            Options -MultiViews
+            RewriteEngine On
+            RewriteCond %{REQUEST_FILENAME} !-f
+            RewriteRule ^(.*)$ app_dev.php [QSA,L]
+        </IfModule>
+    </Directory>
+
+    # uncomment the following lines if you install assets as symlinks
+    # or run into problems when compiling LESS/Sass/CoffeeScript assets
+    # <Directory /var/www/html>
+    #     Options FollowSymlinks
+    # </Directory>
+
+    # optionally disable the RewriteEngine for the asset directories
+    # which will allow apache to simply reply with a 404 when files are
+    # not found instead of passing the request into the full symfony stack
+    <Directory /var/www/project/web/bundles>
+        <IfModule mod_rewrite.c>
+            RewriteEngine Off
+        </IfModule>
+    </Directory>
+
+    ErrorLog /var/log/apache2/project_error.log
+    CustomLog /var/log/apache2/project_access.log combined
+</VirtualHost>
 EOL
 fi
 
