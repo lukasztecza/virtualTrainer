@@ -141,3 +141,5 @@ else
     echo "[Info] Create symfony project running: composer create-project symfony/framework-standard-edition virtualTrainer \"3.2.*\""
 fi
 echo "[Info] Your project is available at $HOST:$PORT"
+echo "[Info] By default development front controller is hit, to change it"
+echo "[Info] edit in virtual machine /etc/apache2/apache2.conf file switching app_dev.php to app.php and restart server"
