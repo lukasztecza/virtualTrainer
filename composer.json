@@ -1,7 +1,7 @@
 {
-    "name": "lukasztecza/personalTrainer",
+    "name": "lukasztecza/virtualTrainer",
     "type": "project",
-    "description": "Personal Trainer App",
+    "description": "Virtual Trainer App",
     "autoload": {
         "psr-4": { "": "src/" },
         "classmap": [ "app/AppKernel.php", "app/AppCache.php" ]

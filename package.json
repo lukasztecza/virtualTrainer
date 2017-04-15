@@ -1,0 +1,10 @@
+{
+    "name": "virtualTrainer",
+    "version": "1.0.0",
+    "description": "Virtual Trainer App",
+    "dependencies": {
+        "gulp": "^3.9.1",
+        "bootstrap": "^3.3.7",
+        "jquery": "^3.2.1"
+    }
+}

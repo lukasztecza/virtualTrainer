@@ -1,5 +1,15 @@
 #!/usr/bin/env bash
 
+# Check if symfony project exists
+if ! [ -f /vagrant/app/AppKernel.php ] ; then
+    echo "[Warning] You do not have symfony project created!"
+    echo "[Info] Pull it from repository: https://github.com/lukasztecza/virtualTrainer.git"
+    echo "[Info] Or create symfony project running: composer create-project symfony/framework-standard-edition virtualTrainer \"3.2.*\""
+    echo "[Info] and move Vagrantfile, bootstrap.sh and .json files (composer, npm) files into it and run vagrant up in it again"
+    echo "[Info] exiting ..."
+    exit 1
+fi
+
 # Set versions and variables
 APACHE_VERSION=2.4.7*
 HOST=localhost
@@ -52,7 +62,14 @@ if ! fgrep key_buffer_size /etc/mysql/my.cnf; then
 fi
 
 # Install php and modules
-apt-get install -y php"$PHP_VERSION" php"$PHP_VERSION"-curl php"$PHP_VERSION"-mysql php"$PHP_VERSION"-gd php"$PHP_VERSION"-zip php"$PHP_VERSION"-xml
+apt-get install -y \
+    php"$PHP_VERSION" \
+    php"$PHP_VERSION"-curl \
+    php"$PHP_VERSION"-mysql \
+    php"$PHP_VERSION"-gd \
+    php"$PHP_VERSION"-zip \
+    php"$PHP_VERSION"-xml \
+    php"$PHP_VERSION"-mbstring
 
 # Display all errors for php
 sed -i "s/error_reporting = .*/error_reporting = E_ALL/" /etc/php/"$PHP_VERSION"/apache2/php.ini
@@ -120,7 +137,8 @@ EOL
 
 # If last command failed then exit
 if [ $? != "0" ]; then
-    echo "[Error]: Database creation failed. Aborting."
+    echo "[Error] Database creation failed"
+    echo "[Info] exiting ... "
     exit 1
 fi
 
@@ -133,13 +151,30 @@ if ! command -v composer; then
     mv composer.phar /usr/local/bin/composer
 fi
 
-# Run composer install or notify to create project (prefer downloading over cloning)
-cd /vagrant
-if  [ -d src ]; then
-    sudo -u vagrant -H sh -c "composer update --prefer-dist"
-else
-    echo "[Info] Create symfony project running: composer create-project symfony/framework-standard-edition virtualTrainer \"3.2.*\""
+# Install phpunit
+if ! command -v phpunit; then
+    wget https://phar.phpunit.de/phpunit-6.1.phar
+    chmod +x phpunit-6.1.phar
+    mv phpunit-6.1.phar /usr/local/bin/phpunit
 fi
+
+# Go to synced folder (where project lives)
+cd /vagrant
+
+# Run composer install (read from composer.json)
+if [ -f /vagrant/composer.json ]; then
+    sudo -u vagrant -H sh -c "composer update --prefer-dist"
+fi
+
+# Install npm
+curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -
+apt-get install -y nodejs
+
+# Run npm install (read from package,json)
+if [ -f /vagrant/package.json ]; then
+    sudo -u vagrant -H sh -c "npm install"
+fi
+
 echo "[Info] Your project is available at $HOST:$PORT"
 echo "[Info] By default development front controller is hit, to change it"
 echo "[Info] edit in virtual machine /etc/apache2/apache2.conf file switching app_dev.php to app.php and restart server"
