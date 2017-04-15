@@ -40,10 +40,8 @@ Vagrant.configure("2") do |config|
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
   # config.vm.synced_folder "../data", "/vagrant_data"
-  # Set owner and permissions to var subdirectories to allow writing and to avoid session file not created by your uid error
-  config.vm.synced_folder "var/cache", "/vagrant/var/cache", :owner=> 'www-data', :group=>'www-data', :mount_options => ["dmode=755","fmode=664"]
-  config.vm.synced_folder "var/logs", "/vagrant/var/logs", :owner=> 'www-data', :group=>'www-data', :mount_options => ["dmode=755","fmode=644"]
-  config.vm.synced_folder "var/sessions", "/vagrant/var/sessions", :owner=> 'www-data', :group=>'www-data', :mount_options => ['dmode=755', 'fmode=644']
+  # Set owner, group and permissions to vagrant synced directory
+  config.vm.synced_folder ".", "/vagrant", :owner=> 'www-data', :group=>'vagrant', :mount_options => ["dmode=775","fmode=664"]
 
   # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.

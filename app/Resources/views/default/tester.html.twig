@@ -1,0 +1,8 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+hello everything works fine  <br> <a href="http://localhost:8080/en/switch-language/pl">link</a>
+{{ "app_default_tester_apple_text_1"|transchoice(count)|desc("{0} No apples|{1} One apple|]1,Inf] %count% apples") }}
+{% endblock %}
+{% block stylesheets %}
+{% endblock %}
