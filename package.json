@@ -4,7 +4,16 @@
     "description": "Virtual Trainer App",
     "dependencies": {
         "gulp": "^3.9.1",
+        "gulp-concat": "^2.6.1",
+        "gulp-uglify": "^2.1.2",
+        "gulp-concat-css": "^2.3.0",
+        "gulp-clean-css": "^3.0.4",
+        "gulp-flatten": "^0.3.1",
         "bootstrap": "^3.3.7",
         "jquery": "^3.2.1"
+    },
+    "scripts": {
+        "gulp": "node /vagrant/node_modules/gulp/bin/gulp",
+        "watch": "node /vagrant/node_modules/gulp/bin/gulp watch"
     }
 }
