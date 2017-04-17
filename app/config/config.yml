@@ -31,7 +31,8 @@ framework:
         save_path:   "%kernel.root_dir%/../var/sessions/%kernel.environment%"
     fragments: ~
     http_method_override: true
-    assets: ~
+    assets:
+        version_strategy: 'app.assets.versioning.gulp_buster'
     php_errors:
         log: true
 

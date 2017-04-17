@@ -4,6 +4,7 @@ var uglify = require('gulp-uglify');
 var concatCss = require('gulp-concat-css');
 var cleanCss = require('gulp-clean-css');
 var flatten = require('gulp-flatten');
+var bust = require('gulp-buster');
 
 var cssPath = './web/css';
 var jsPath = './web/js';
@@ -19,6 +20,8 @@ gulp.task('process-css', function() {
         .pipe(cleanCss())
         .pipe(flatten())
         .pipe(gulp.dest(cssPath))
+        .pipe(bust())
+        .pipe(gulp.dest('.'));
     ;
 });
 
@@ -32,6 +35,8 @@ gulp.task('process-js', function() {
         .pipe(uglify())
         .pipe(flatten())
         .pipe(gulp.dest(jsPath))
+        .pipe(bust())
+        .pipe(gulp.dest('.'));
     ;
 });
 

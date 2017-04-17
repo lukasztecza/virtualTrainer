@@ -16,3 +16,10 @@ services:
         class: Twig_Extensions_Extension_Text
         tags:
             - name: twig.extension
+
+    app.assets.versioning.gulp_buster:
+        class: AppBundle\Asset\VersionStrategy\GulpBusterVersionStrategy
+        arguments:
+            - "%kernel.root_dir%/../busters.json"
+            - "%%s?version=%%s"
+        public: false
