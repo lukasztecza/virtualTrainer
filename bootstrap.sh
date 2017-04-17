@@ -21,7 +21,7 @@ MYSQL_USER=user
 MYSQL_USER_PASSWORD=pass
 MYSQL_HOST=localhost
 MYSQL_DATABASE=virtual_trainer
-PHP_VERSION=7.1
+PHP_VERSION=7.0
 
 # Export variable to fix "dpkg-preconfigure: unable to re-open..." error
 export DEBIAN_FRONTEND=noninteractive
