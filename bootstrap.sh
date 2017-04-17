@@ -181,4 +181,5 @@ echo "[Info] edit in virtual machine /etc/apache2/apache2.conf file switching ap
 echo "[Info] To execute tests go into virtual machine /vagrant directory and type phpunit"
 echo "[Info] To rebuild assets go into virtual machine /vagrant directory and type npm run gulp"
 echo "[Info] To track changes of css and js files in src directory go into virtual machine /vagrant directory and type npm run watch"
-echo "[Info] To execute symfony or doctrine stuff you need only php-cli so you can run them from outside of virtual machine"
+echo "[Info] To execute symfony or generator stuff you need only php-cli so you can run them from outside of virtual machine"
+echo "[Info] To execute doctrine stuff that need access to the database go into virtual machine /vagrant directory"
