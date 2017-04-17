@@ -163,7 +163,7 @@ cd /vagrant
 
 # Run composer install (read from composer.json)
 if [ -f /vagrant/composer.json ]; then
-    sudo -u vagrant -H sh -c "composer update --prefer-dist"
+    sudo -u vagrant -H sh -c "composer install --prefer-dist"
 fi
 
 # Install npm
@@ -178,3 +178,7 @@ fi
 echo "[Info] Your project is available at $HOST:$PORT"
 echo "[Info] By default development front controller is hit, to change it"
 echo "[Info] edit in virtual machine /etc/apache2/apache2.conf file switching app_dev.php to app.php and restart server"
+echo "[Info] To execute tests go into virtual machine /vagrant directory and type phpunit"
+echo "[Info] To rebuild assets go into virtual machine /vagrant directory and type npm run gulp"
+echo "[Info] To track changes of css and js files in src directory go into virtual machine /vagrant directory and type npm run watch"
+echo "[Info] To execute symfony or doctrine stuff you need only php-cli so you can run them from outside of virtual machine"
