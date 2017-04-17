@@ -163,7 +163,7 @@ cd /vagrant
 
 # Run composer install (read from composer.json)
 if [ -f /vagrant/composer.json ]; then
-    sudo -u vagrant -H sh -c "composer update --prefer-dist"
+    sudo -u vagrant -H sh -c "composer install --prefer-dist"
 fi
 
 # Install npm
