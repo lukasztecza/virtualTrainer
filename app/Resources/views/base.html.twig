@@ -2,12 +2,29 @@
 <html>
     <head>
         <meta charset="UTF-8" />
-        <title>{% block title %}Welcome!{% endblock %}</title>
+        <meta name="description" content="Lukasz Tecza virtual trainer application. This application will help you in workouts building training plans and providing handful online automated training assistance." />
+        <meta name="keywords" content="Lukasz Tecza, Łukasz Tęcza, virtual trainer, workout, training plans" />
+        <meta name="author" content="Lukasz Tecza" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>{% block title %}Virtual Trainer{% endblock %}</title>
         {% block stylesheets %}{% endblock %}
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
     <body>
-        {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
+        {{ knp_menu_render(['main', 'Home']) }}
+        {# knp_menu_render('locales') #}
+
+    <ul>
+        {% for item in knp_menu_get('locales') %}
+            {% if app.request.locale == item.label  %}
+                <li><em><a href="{{ item.uri }}">{{ item.label }}</a></em></li>
+            {% else %}
+                <li><a href="{{ item.uri }}">{{ item.label }}</a></li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+
+        {% block content %}{% endblock content %}
+        {% block javascripts %}{% endblock javascripts %}
     </body>
 </html>

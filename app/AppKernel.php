@@ -21,6 +21,7 @@ class AppKernel extends Kernel
             new JMS\AopBundle\JMSAopBundle(),
             new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
             new FOS\UserBundle\FOSUserBundle(),
+            new Knp\Bundle\MenuBundle\KnpMenuBundle(),
         ];
 
         if (in_array($this->getEnvironment(), ['dev', 'test'], true)) {
