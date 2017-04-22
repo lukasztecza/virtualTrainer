@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2017-04-15T05:11:13Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
+  <file date="2017-04-22T15:05:35Z" source-language="en" target-language="en" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
     </header>
     <body>
       <trans-unit id="70fda023af88510c4a9d0f578f668eb911226462" resname="app_default_tester_apple_text_1">
-        <source>app_default_tester_apple_text_1</source>
+        <source>{0} No apples|{1} One apple|]1,Inf] %count% apples</source>
         <target>{0} There is no apples|{1} There is one apple|]1,Inf] There are %count% apples</target>
+        <jms:reference-file line="7">/../../../../../../.././app/Resources/views/default/tester.html.twig</jms:reference-file>
+      </trans-unit>
+      <trans-unit id="7fe0d7a570f7b07614a09d55dbf7c0b4b6eab79c" resname="navigation.search">
+        <source>Search</source>
+        <target state="new">Search</target>
+        <jms:reference-file line="18">/../../../../../../.././app/Resources/views/navigation.html.twig</jms:reference-file>
+        <jms:reference-file line="20">/../../../../../../.././app/Resources/views/navigation.html.twig</jms:reference-file>
       </trans-unit>
     </body>
   </file>

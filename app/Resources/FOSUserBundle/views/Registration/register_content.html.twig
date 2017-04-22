@@ -1,8 +1,60 @@
 {% trans_default_domain 'FOSUserBundle' %}
 
-{{ form_start(form, {'method': 'post', 'action': path('fos_user_registration_register'), 'attr': {'class': 'fos_user_registration_register'}}) }}
-    {{ form_widget(form) }}
-    <div>
-        <input type="submit" value="{{ 'registration.submit'|trans }}" />
+{% if form_errors(form) is not empty %}
+    <div class="alert alert-danger">
+        {{ form_errors(form.email) }}
+        {{ form_errors(form.plainPassword) }}
+        {{ form_errors(form.plainPassword.first) }}
+        {{ form_errors(form.plainPassword.second) }}
     </div>
-{{ form_end(form) }}
+{% endif %}
+
+<div class="well center-block form-authorization">
+    {{ form_start(form, {
+        'method': 'post', 'action': path('fos_user_registration_register'),
+        'attr': {'class': 'fos_user_registration_register'}
+    }) }}
+
+        <div>
+            <input id="{{ form._token.vars.id }}" name="{{ form._token.vars.full_name }}" value="{{ form._token.vars.value }}" type="hidden" />
+        </div>
+
+        <div class="form-group">
+            <input
+                class="form-control"
+                id="{{ form.email.vars.id }}"
+                name="{{ form.email.vars.full_name }}"
+                required="required"
+                type="email"
+                placeholder="{{ form.email.vars.label|trans }}"
+            />
+        </div>
+
+        <div class="form-group">
+            <input
+                class="form-control"
+                id="{{ form.plainPassword.first.vars.id }}"
+                name="{{ form.plainPassword.first.vars.full_name }}"
+                required="required"
+                type="password"
+                placeholder="{{ form.plainPassword.first.vars.label|trans }}"
+            />
+        </div>
+
+        <div class="form-group">
+            <input
+                class="form-control"
+                id="{{ form.plainPassword.second.vars.id }}"
+                name="{{ form.plainPassword.second.vars.full_name }}"
+                required="required"
+                type="password"
+                placeholder="{{ form.plainPassword.second.vars.label|trans }}"
+            />
+        </div>
+
+        <div class="form-group">
+            <input class="btn btn-default btn-block" type="submit" value="{{ 'registration.submit'|trans }}" />
+        </div>
+
+    {{ form_end(form, {'render_rest': false}) }}
+</div>

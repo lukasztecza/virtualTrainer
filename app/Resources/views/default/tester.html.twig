@@ -6,10 +6,3 @@ hello everything works fine  <br> <a href="http://localhost:8080/en/switch-langu
 <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
 {{ "app_default_tester_apple_text_1"|transchoice(count)|desc("{0} No apples|{1} One apple|]1,Inf] %count% apples") }}
 {% endblock content %}
-{% block stylesheets %}
-    <link rel="stylesheet" href="{{ asset('css/minified.css') }}" />
-{% endblock stylesheets %}
-
-{% block javascripts %}
-    <script src="{{ asset('js/minified.js') }}"></script>
-{% endblock javascripts %}
