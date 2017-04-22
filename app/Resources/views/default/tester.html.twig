@@ -1,15 +1,15 @@
 {% extends 'base.html.twig' %}
 
-{% block body %}
+{% block content %}
 hello everything works fine  <br> <a href="http://localhost:8080/en/switch-language/pl">link</a>
 <button type="button" class="btn btn-success">Default</button>
 <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
 {{ "app_default_tester_apple_text_1"|transchoice(count)|desc("{0} No apples|{1} One apple|]1,Inf] %count% apples") }}
-{% endblock %}
+{% endblock content %}
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ asset('css/minified.css') }}" />
-{% endblock %}
+{% endblock stylesheets %}
 
 {% block javascripts %}
     <script src="{{ asset('js/minified.js') }}"></script>
-{% endblock %}
+{% endblock javascripts %}
