@@ -33,3 +33,9 @@ services:
         tags:
             - { name: knp_menu.menu_builder, method: createMainMenu, alias: main } # The alias is what is used to retrieve the menu
             - { name: knp_menu.menu_builder, method: createLocalesMenu, alias: locales }
+            - { name: knp_menu.menu_builder, method: createAuthenticationMenu, alias: authentication }
+
+    app.form.registration:
+        class: AppBundle\Form\RegistrationType
+        tags:
+            - { name: form.type, alias: app_user_registration }

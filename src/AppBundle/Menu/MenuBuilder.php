@@ -26,14 +26,23 @@ class MenuBuilder
     public function createMainMenu(array $options)
     {
         $menu = $this->factory->createItem('root');
-
-        if ($this->securityAuthorizationChecker->isGranted('IS_AUTHENTICATED_FULLY')) {
-            $menu->addChild('Logout', ['route' => 'fos_user_security_logout']);
-        } else {
-            $menu->addChild('Login', ['route' => 'fos_user_security_login']);
-        }
+//@TODO change it
         $menu->addChild('Home', ['route' => 'app_default_index']);
         $menu->addChild('Tester', ['route' => 'app_default_tester']);
+
+        return $menu;
+    }
+
+    public function createAuthenticationMenu(array $options)
+    {
+        $menu = $this->factory->createItem('root');
+
+        if ($this->securityAuthorizationChecker->isGranted('IS_AUTHENTICATED_FULLY')) {
+            $menu->addChild('logout', ['route' => 'fos_user_security_logout', 'label' => 'layout.logout']);
+        } else {
+            $menu->addChild('login', ['route' => 'fos_user_security_login', 'label' => 'layout.login']);
+            $menu->addChild('register', ['route' => 'fos_user_registration_register', 'label' => 'layout.register']);
+        }
 
         return $menu;
     }
