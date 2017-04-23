@@ -1,8 +1,47 @@
 {% trans_default_domain 'FOSUserBundle' %}
 
-{{ form_start(form, { 'action': path('fos_user_profile_edit'), 'attr': { 'class': 'fos_user_profile_edit' } }) }}
-    {{ form_widget(form) }}
-    <div>
-        <input type="submit" value="{{ 'profile.edit.submit'|trans }}" />
+{% if form_errors(form.email) is not empty or form_errors(form.current_password) is not empty %}
+    <div class="alert alert-danger">
+        {{ form_errors(form.email) }}
+        {{ form_errors(form.current_password) }}
     </div>
-{{ form_end(form) }}
+{% endif %}
+
+<div class="well center-block form-authorization">
+    {{ form_start(form, {
+        'action': path('fos_user_profile_edit'),
+        'attr': { 'class': 'fos_user_profile_edit' } })
+    }}
+
+        <div>
+            {{ form_row(form._token) }}
+        </div>
+
+        <div class="form-group">
+            <input
+                class="form-control"
+                id="{{ form.email.vars.id }}"
+                name="{{ form.email.vars.full_name }}"
+                required="required"
+                type="email"
+                value="{{ form.email.vars.value }}"
+                placeholder="{{ form.email.vars.label|trans }}"
+            />
+        </div>
+
+        <div class="form-group">
+            <input
+                class="form-control"
+                id="{{ form.current_password.vars.id }}"
+                name="{{ form.current_password.vars.full_name }}"
+                required="required"
+                type="password"
+                placeholder="{{ form.current_password.vars.label|trans }}"
+            />
+        </div>
+
+        <div class="form-group">
+            <input class="btn btn-default btn-block" type="submit" value="{{ 'profile.edit.submit'|trans }}" />
+        </div>
+    {{ form_end(form, {'render_rest': false}) }}
+</div>
