@@ -16,13 +16,16 @@
         {% block navigation %}
             {% include 'navigation.html.twig' %}
         {% endblock navigation %}
-        {% block flash %}
-            {% include 'flash.html.twig' %}
-        {% endblock flash %}
+
         <div class="container">
+            {% block flash %}
+                {% include 'flash.html.twig' %}
+            {% endblock flash %}
+
             {% block content %}
             {% endblock content %}
         </div>
+
         {% block javascripts %}
             <script src="{{ asset('js/minified.js') }}"></script>
         {% endblock javascripts %}

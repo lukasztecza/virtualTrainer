@@ -2,7 +2,9 @@
     {% for type, messages in app.session.flashbag.all() %}
         {% for message in messages %}
             <div class="flash-{{ type }} alert alert-{{ type }}">
-                {{ message }}
+                <ul>
+                    <li>{{ message }}</li>
+                </ul>
             </div>
         {% endfor %}
     {% endfor %}

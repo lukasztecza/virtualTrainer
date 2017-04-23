@@ -26,9 +26,11 @@ class MenuBuilder
     public function createMainMenu(array $options)
     {
         $menu = $this->factory->createItem('root');
-//@TODO change it
-        $menu->addChild('Home', ['route' => 'app_default_index']);
-        $menu->addChild('Tester', ['route' => 'app_default_tester']);
+//@TODO change it and add translations
+        $menu->addChild('home', ['route' => 'app_default_index', 'label' => 'translate me home']);
+        $menu->addChild('Tester', ['route' => 'app_default_tester', 'label' => 'translate me teseter']);
+        $menu->addChild('profile', ['route' => 'fos_user_profile_edit', 'label' => 'translate me edit profile']);
+        $menu->addChild('password', ['route' => 'fos_user_change_password', 'label' => 'translate me change pass']);
 
         return $menu;
     }
@@ -40,8 +42,8 @@ class MenuBuilder
         if ($this->securityAuthorizationChecker->isGranted('IS_AUTHENTICATED_FULLY')) {
             $menu->addChild('logout', ['route' => 'fos_user_security_logout', 'label' => 'layout.logout']);
         } else {
-            $menu->addChild('login', ['route' => 'fos_user_security_login', 'label' => 'layout.login']);
             $menu->addChild('register', ['route' => 'fos_user_registration_register', 'label' => 'layout.register']);
+            $menu->addChild('login', ['route' => 'fos_user_security_login', 'label' => 'layout.login']);
         }
 
         return $menu;

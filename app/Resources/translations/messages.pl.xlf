@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" xmlns:jms="urn:jms:translation" version="1.2">
-  <file date="2017-04-22T19:09:15Z" source-language="en" target-language="pl" datatype="plaintext" original="not.available">
+  <file date="2017-04-22T21:59:18Z" source-language="en" target-language="pl" datatype="plaintext" original="not.available">
     <header>
       <tool tool-id="JMSTranslationBundle" tool-name="JMSTranslationBundle" tool-version="1.1.0-DEV"/>
       <note>The source node in most cases contains the sample message as written by the developer. If it looks like a dot-delimitted string such as "form.label.firstname", then the developer has not provided a default message.</note>
@@ -9,6 +9,11 @@
       <trans-unit id="70fda023af88510c4a9d0f578f668eb911226462" resname="app_default_tester_apple_text_1">
         <source>app_default_tester_apple_text_1</source>
         <target>{0} Nie ma jabłek|{1} Jest jedno jabłko|]1,Inf] Jest %count% jabłek</target>
+      </trans-unit>
+      <trans-unit id="827e0c5ba4def0ef9f62b2b75a37a74e94d7003e" resname="fos.login.forgot.password">
+        <source>Forgot password?</source>
+        <target>Nie pamiętasz hasła?</target>
+        <jms:reference-file line="47">/../../../../../../.././app/Resources/FOSUserBundle/views/Security/login_content.html.twig</jms:reference-file>
       </trans-unit>
       <trans-unit id="7fe0d7a570f7b07614a09d55dbf7c0b4b6eab79c" resname="navigation.search">
         <source>navigation.search</source>
