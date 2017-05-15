@@ -12,8 +12,17 @@ app:
 JMSTranslationBundle_ui:
     resource: '@JMSTranslationBundle/Controller/'
     type:     annotation
-    prefix:   /_trans
+    prefix:   /trans
 
 fos_user:
     resource: "@FOSUserBundle/Resources/config/routing/all.xml"
     prefix: /{_locale}/
+
+_sonata_admin:
+    resource: .
+    type: sonata_admin
+    prefix: /admin
+
+admin_area:
+    resource: "@SonataAdminBundle/Resources/config/routing/sonata_admin.xml"
+    prefix: /admin
