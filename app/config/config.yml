@@ -111,7 +111,30 @@ knp_menu:
     # use "twig: false" to disable the Twig extension and the TwigRenderer
     twig:
         template: KnpMenuBundle::menu.html.twig
-    #  if true, enables the helper for PHP templates
+    # if true, enables the helper for PHP templates
     templating: false
     # the renderer to use, list is also available by default
     default_renderer: twig
+
+# Sonata Admin Bundle
+sonata_admin:
+    title:      Virtual Trainer
+    title_logo: /images/favicon.ico
+    show_mosaic_button:   false
+    security:
+        handler: sonata.admin.security.handler.role
+    templates:
+        # other configuration options
+        search:              SonataAdminBundle:Core:search.html.twig
+        search_result_block: SonataAdminBundle:Block:block_search_result.html.twig
+        layout:              SonataAdminBundle::layout.html.twig
+
+# Sonata Admin Bundle Blocks
+sonata_block:
+    default_contexts: [cms]
+    blocks:
+        # enable the SonataAdminBundle block
+        sonata.admin.block.admin_list:
+            contexts: [admin]
+        sonata.admin.block.search_result:
+            contexts: [admin]
