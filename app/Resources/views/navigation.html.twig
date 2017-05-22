@@ -71,6 +71,27 @@
                 </ul>
             {% endif %}
 
+            {% if is_granted("ROLE_PREVIOUS_ADMIN") or is_granted("ROLE_SONATA_ADMIN") or is_granted("ROLE_TRANSLATOR") %}
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown">
+                        <a
+                            href="#"
+                            class="dropdown-toggle"
+                            data-toggle="dropdown"
+                            role="button"
+                            aria-haspopup="true"
+                            aria-expanded="false"
+                        >Admin menu<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            {% for item in knp_menu_get('admin') %}
+                                <li>
+                                    <a href="{{ item.uri }}">{{ item.label }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                </ul>
+            {% endif %}
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
 </nav>

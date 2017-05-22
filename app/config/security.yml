@@ -15,7 +15,7 @@ security:
 
         ROLE_TRANSLATOR:  ROLE_USER
         ROLE_SUPPORT:     [ROLE_USER, ROLE_SONATA_ADMIN, ROLE_ADMIN_READER, ROLE_ADMIN_UNHARMFUL]
-        ROLE_ADMIN:       [ROLE_USER, ROLE_TRANSLATOR, ROLE_SUPPORT, ROLE_ADMIN_EDITOR]
+        ROLE_ADMIN:       [ROLE_USER, ROLE_TRANSLATOR, ROLE_SUPPORT, ROLE_ADMIN_EDITOR, ROLE_ALLOWED_TO_SWITCH]
         ROLE_SUPER_ADMIN: ROLE_ADMIN
 
     # http://symfony.com/doc/current/security.html#b-configuring-how-users-are-loaded
@@ -32,6 +32,7 @@ security:
             security: false
         main:
             pattern: ^/
+            switch_user: true
             form_login:
                 provider: fos_userbundle
                 csrf_token_generator: security.csrf.token_manager

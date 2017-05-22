@@ -59,4 +59,25 @@ class MenuBuilder
 
         return $menu;
     }
+
+    public function createAdminMenu(array $options)
+    {
+        $menu = $this->factory->createItem('root');
+
+        if ($this->securityAuthorizationChecker->isGranted('ROLE_TRANSLATOR')) {
+            $menu->addChild('trans', ['route' => 'jms_translation_index', 'label' => 'translation panel']);
+        }
+        if ($this->securityAuthorizationChecker->isGranted('ROLE_SONATA_ADMIN')) {
+            $menu->addChild('admin', ['route' => 'sonata_admin_dashboard', 'label' => 'admin panel']);
+        }
+        if ($this->securityAuthorizationChecker->isGranted('ROLE_PREVIOUS_ADMIN')) {
+            $menu->addChild('admin', [
+                'route' => 'sonata_admin_dashboard',
+                'routeParameters' => ['_switch_user' => '_exit'],
+                'label' => 'exit impersonation'
+            ]);
+        }
+
+        return $menu;
+    }
 }
