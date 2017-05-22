@@ -34,6 +34,7 @@ services:
             - { name: knp_menu.menu_builder, method: createMainMenu, alias: main } # The alias is what is used to retrieve the menu
             - { name: knp_menu.menu_builder, method: createLocalesMenu, alias: locales }
             - { name: knp_menu.menu_builder, method: createAuthenticationMenu, alias: authentication }
+            - { name: knp_menu.menu_builder, method: createAdminMenu, alias: admin }
 
     # Override Fos User Bundle default registration form
     app.form.registration:
@@ -47,6 +48,24 @@ services:
         tags:
             - { name: form.type, alias: app_user_profile }
 
+    # Prevents from impersonating admin user
+    app.switch_user_listener:
+        class: AppBundle\EventListener\SwitchUserListener
+        arguments:
+            - "@security.authorization_checker"
+            - "@security.token_storage"
+        tags:
+            - { name: kernel.event_listener, event: security.switch_user, method: onSwitchUser }
+
+    # Listens to suspicious behaviours
+    app.suspicious_behaviour_subscriber:
+        class: AppBundle\EventSubscriber\SuspiciousBehaviourSubscriber
+        arguments:
+            - "@router"
+        tags:
+            - { name: kernel.event_subscriber }
+
+    # Sonata Admin classes
     admin.user:
         class: AppBundle\Admin\UserAdmin
         arguments: [~, AppBundle\Entity\User, ~]
