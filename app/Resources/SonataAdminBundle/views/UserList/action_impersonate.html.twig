@@ -1,0 +1,5 @@
+{% if not is_granted('ROLE_PREVIOUS_ADMIN') and not app.user.email is same as(object.email)  %}
+    {% if is_granted('ROLE_SUPER_ADMIN') or (object.roles|length is same as(1) and object.roles[0] is same as('ROLE_USER')) %}
+        <a class="btn btn-sm btn-default view_link" href="{{ path('app_default_index', {'_switch_user':object.email}) }}">Impersonate</a>
+    {% endif %}
+{% endif %}
