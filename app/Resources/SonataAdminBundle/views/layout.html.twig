@@ -206,12 +206,11 @@ file that was distributed with this source code.
                                                     <i class="fa fa-user fa-fw" aria-hidden="true"></i> <i class="fa fa-caret-down" aria-hidden="true"></i>
                                                 </a>
                                                 <ul class="dropdown-menu dropdown-user" style="width:100px">
-                                                    <li>
-                                                        <a href="{{ path('app_default_index') }}">Site</a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="{{ path('fos_user_security_logout') }}">Logout</a>
-                                                    </li>
+                                                    {% for item in knp_menu_get('admin', [], {'source':'admin'}) %}
+                                                        <li>
+                                                            <a href="{{ item.uri }}">{{ item.label }}</a>
+                                                        </li>
+                                                    {% endfor %}
                                                     {% include sonata_admin.adminPool.getTemplate('user_block') %}
                                                 </ul>
                                             </li>

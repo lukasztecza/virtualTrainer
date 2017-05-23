@@ -62,12 +62,16 @@ class MenuBuilder
 
     public function createAdminMenu(array $options)
     {
+        $source = $options['source'] ?? false;
         $menu = $this->factory->createItem('root');
 
-        if ($this->securityAuthorizationChecker->isGranted('ROLE_TRANSLATOR')) {
+        if (isset($options['source']) && $source !== 'site') {
+            $menu->addChild('site', ['route' => 'app_default_index', 'label' => 'site']);
+        }
+        if ($this->securityAuthorizationChecker->isGranted('ROLE_TRANSLATOR') && $source !== 'trans') {
             $menu->addChild('trans', ['route' => 'jms_translation_index', 'label' => 'translation panel']);
         }
-        if ($this->securityAuthorizationChecker->isGranted('ROLE_SONATA_ADMIN')) {
+        if ($this->securityAuthorizationChecker->isGranted('ROLE_SONATA_ADMIN') && $source !== 'admin') {
             $menu->addChild('admin', ['route' => 'sonata_admin_dashboard', 'label' => 'admin panel']);
         }
         if ($this->securityAuthorizationChecker->isGranted('ROLE_PREVIOUS_ADMIN')) {
@@ -76,6 +80,9 @@ class MenuBuilder
                 'routeParameters' => ['_switch_user' => '_exit'],
                 'label' => 'exit impersonation'
             ]);
+        }
+        if ($source !== 'site') {
+            $menu->addChild('logout', ['route' => 'fos_user_security_logout', 'label' => 'logout']);
         }
 
         return $menu;

@@ -83,7 +83,7 @@
                             aria-expanded="false"
                         >Admin menu<span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            {% for item in knp_menu_get('admin') %}
+                            {% for item in knp_menu_get('admin', [], {'source':'site'}) %}
                                 <li>
                                     <a href="{{ item.uri }}">{{ item.label }}</a>
                                 </li>
