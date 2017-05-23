@@ -207,7 +207,10 @@ file that was distributed with this source code.
                                                 </a>
                                                 <ul class="dropdown-menu dropdown-user" style="width:100px">
                                                     <li>
-                                                        <a href="{{ path('fos_user_security_logout') }}" >Logout</a>
+                                                        <a href="{{ path('app_default_index') }}">Site</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="{{ path('fos_user_security_logout') }}">Logout</a>
                                                     </li>
                                                     {% include sonata_admin.adminPool.getTemplate('user_block') %}
                                                 </ul>

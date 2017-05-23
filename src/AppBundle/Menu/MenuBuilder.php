@@ -71,7 +71,7 @@ class MenuBuilder
             $menu->addChild('admin', ['route' => 'sonata_admin_dashboard', 'label' => 'admin panel']);
         }
         if ($this->securityAuthorizationChecker->isGranted('ROLE_PREVIOUS_ADMIN')) {
-            $menu->addChild('admin', [
+            $menu->addChild('exit', [
                 'route' => 'sonata_admin_dashboard',
                 'routeParameters' => ['_switch_user' => '_exit'],
                 'label' => 'exit impersonation'

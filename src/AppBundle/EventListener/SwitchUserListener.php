@@ -22,6 +22,7 @@ class SwitchUserListener
         $targetUserRoles = $event->getTargetUser()->getRoles();
         if (
             !$this->authorizationChecker->isGranted('ROLE_PREVIOUS_ADMIN') &&
+            !$this->authorizationChecker->isGranted('ROLE_SUPER_ADMIN') &&
             (count($targetUserRoles) !== 1 || $targetUserRoles[0] !== 'ROLE_USER')
         ) {
             throw new SwitchUserNotAllowedException();
