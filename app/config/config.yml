@@ -120,14 +120,20 @@ knp_menu:
 sonata_admin:
     title:      Virtual Trainer
     title_logo: /images/favicon.ico
-    show_mosaic_button:   false
+    show_mosaic_button: false
     security:
         handler: sonata.admin.security.handler.role
     templates:
         # other configuration options
-        search:              SonataAdminBundle:Core:search.html.twig
+        search: SonataAdminBundle:Core:search.html.twig
         search_result_block: SonataAdminBundle:Block:block_search_result.html.twig
-        layout:              SonataAdminBundle::layout.html.twig
+        layout: SonataAdminBundle::layout.html.twig
+    dashboard:
+        groups:
+            Users:
+                on_top: true
+                items:
+                    - admin.user
 
 # Sonata Admin Bundle Blocks
 sonata_block:
