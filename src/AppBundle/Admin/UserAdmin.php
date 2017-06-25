@@ -7,15 +7,24 @@ use Sonata\AdminBundle\Datagrid\ListMapper;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
 use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\CoreBundle\Form\Type\EqualType;
+use FOS\UserBundle\Util\LegacyFormHelper;
+use FOS\UserBundle\Model\UserManager;
 
 class UserAdmin extends AbstractAdmin
 {
+    private $fosUserManager;
 
     protected $datagridValues = array(
         '_page' => 1,
         '_sort_order' => 'DESC',
         '_sort_by' => 'id'
     );
+
+    public function __construct($code, $class, $baseControllerName, UserManager $fosUserManager)
+    {
+        parent::__construct($code, $class, $baseControllerName);
+        $this->fosUserManager = $fosUserManager;
+    }
 
     public function configureDefaultFilterValues(array &$filterValues)
     {
@@ -37,6 +46,10 @@ class UserAdmin extends AbstractAdmin
         return parent::getFilterParameters();
     }
 
+    public function preUpdate($user)
+    {
+        $this->fosUserManager->updatePassword($user);
+    }
 
     protected function configureShowFields(ShowMapper $showMapper)
     {
@@ -45,13 +58,9 @@ class UserAdmin extends AbstractAdmin
             ->add('email')
             ->add('enabled')
             ->add('lastLogin')
-            ->add('roles')
-            //@TODO create custom query in callback https://sonata-project.org/bundles/admin/master/doc/reference/action_list.html#callback-filter
-            /* default wrong query
-SELECT count(DISTINCT f0_.id) AS sclr_0 FROM fos_user f0_ WHERE f0_.roles LIKE ?
-
-Parameters: [0 => %ROLE_USER%]
-            */
+            ->add('roles', null, [
+                'template' => 'SonataAdminBundle:UserShow:roles.html.twig'
+            ])
         ;
     }
 
@@ -60,8 +69,14 @@ Parameters: [0 => %ROLE_USER%]
         $formMapper
             ->add('email')
             ->add('enabled')
-            ->add('password')
-            //@TODO set custom password save function now it shows salt and hash
+            ->add('plainPassword', LegacyFormHelper::getType('Symfony\Component\Form\Extension\Core\Type\RepeatedType'), [
+                'type' => LegacyFormHelper::getType('Symfony\Component\Form\Extension\Core\Type\PasswordType'),
+                'options' => ['translation_domain' => 'FOSUserBundle'],
+                'first_options' => ['label' => 'form.password'],
+                'second_options' => ['label' => 'form.password_confirmation'],
+                'invalid_message' => 'fos_user.password.mismatch',
+                'required' => false
+            ])
         ;
     }
 
@@ -71,7 +86,8 @@ Parameters: [0 => %ROLE_USER%]
             ->add('id')
             ->add('email')
             ->add('roles')
-            //@TODO display it properly in show
+            //@TODO display it properly in show add custom filtering by role or create default filtering for common users translators etc and
+            // create sub menu for each
         ;
     }
 
@@ -81,17 +97,19 @@ Parameters: [0 => %ROLE_USER%]
             ->add('id')
             ->add('email')
             ->add('enabled')
-            ->add('roles')
-            ->add('_action', null, array(
-                'actions' => array(
-                    'show' => array(),
-                    'edit' => array(),
-                    'delete' => array(),
-                    'impersonate' => array(
+            ->add('roles', null, [
+                'template' => 'SonataAdminBundle:UserList:roles.html.twig'
+            ])
+            ->add('_action', null, [
+                'actions' => [
+                    'show' => [],
+                    'edit' => [],
+                    'delete' => [],
+                    'impersonate' => [
                         'template' => 'SonataAdminBundle:UserList:action_impersonate.html.twig'
-                    )
-                )
-            ))
+                    ]
+                ]
+            ])
         ;
     }
 }

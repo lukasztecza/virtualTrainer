@@ -68,6 +68,6 @@ services:
     # Sonata Admin classes
     admin.user:
         class: AppBundle\Admin\UserAdmin
-        arguments: [~, AppBundle\Entity\User, ~]
+        arguments: [~, AppBundle\Entity\User, ~, "@fos_user.user_manager"]
         tags:
             - { name: sonata.admin, manager_type: orm, label: User }
