@@ -58,6 +58,8 @@ class UserAdmin extends AbstractAdmin
                 'invalid_message' => 'fos_user.password.mismatch',
                 'required' => false
             ])
+            ->add('roles')
+            //@TODO make it nicer (it works thoug currently)
         ;
     }
 
