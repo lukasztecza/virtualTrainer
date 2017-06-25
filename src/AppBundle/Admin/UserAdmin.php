@@ -9,6 +9,7 @@ use Sonata\AdminBundle\Form\FormMapper;
 use Sonata\CoreBundle\Form\Type\EqualType;
 use FOS\UserBundle\Util\LegacyFormHelper;
 use FOS\UserBundle\Model\UserManager;
+use Sonata\DoctrineORMAdminBundle\Filter\CallbackFilter;
 
 class UserAdmin extends AbstractAdmin
 {
@@ -24,26 +25,6 @@ class UserAdmin extends AbstractAdmin
     {
         parent::__construct($code, $class, $baseControllerName);
         $this->fosUserManager = $fosUserManager;
-    }
-
-    public function configureDefaultFilterValues(array &$filterValues)
-    {
-//        $filterValues['id'] = array(
-  //          'type'  => EqualType::TYPE_IS_EQUAL,
-    //        'value' => 1,
-      //  );
-    }
-
-    public function getFilterParameters()
-    {
-//        $this->datagridValues = array_merge(array(
- //           'id' => array (
-   //             'type'  => 1,
-     //           'value' => 2
-       //     )
-        //), $this->datagridValues);
-        //@TODO create default filter by roles to filter out not ROLE_USER only users
-        return parent::getFilterParameters();
     }
 
     public function preUpdate($user)
@@ -85,10 +66,28 @@ class UserAdmin extends AbstractAdmin
         $datagridMapper
             ->add('id')
             ->add('email')
-            ->add('roles')
-            //@TODO display it properly in show add custom filtering by role or create default filtering for common users translators etc and
-            // create sub menu for each
+            ->add('roles', CallbackFilter::class, [
+                'callback' => array($this, 'filterRoles'),
+                'field_type' => 'text'
+            ])
         ;
+    }
+
+    public function filterRoles($queryBuilder, $alias, $field, $value)
+    {
+        if (!$value['value']) {
+            return;
+        } elseif (false !== strpos('user', strtolower($value['value']))) {
+            $queryBuilder->andWhere(
+                //only ROLE_USER which is not mentioned in fos_user table
+                $queryBuilder->expr()->eq($alias .'.' . $field, $queryBuilder->expr()->literal('a:0:{}'))
+            );
+        } else {
+            $queryBuilder->andWhere(
+                $queryBuilder->expr()->like($alias .'.' . $field, $queryBuilder->expr()->literal('%' . $value['value'] . '%'))
+            );
+        }
+        return true;
     }
 
     protected function configureListFields(ListMapper $listMapper)
