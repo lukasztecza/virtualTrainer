@@ -10,10 +10,14 @@ use Sonata\CoreBundle\Form\Type\EqualType;
 use FOS\UserBundle\Util\LegacyFormHelper;
 use FOS\UserBundle\Model\UserManager;
 use Sonata\DoctrineORMAdminBundle\Filter\CallbackFilter;
+use Symfony\Component\Security\Core\Role\RoleHierarchy;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
+use AppBundle\Exception\UserNotAllowedModificationException;
 
 class UserAdmin extends AbstractAdmin
 {
     private $fosUserManager;
+    private $roleHierarchy;
 
     protected $datagridValues = array(
         '_page' => 1,
@@ -21,15 +25,32 @@ class UserAdmin extends AbstractAdmin
         '_sort_by' => 'id'
     );
 
-    public function __construct($code, $class, $baseControllerName, UserManager $fosUserManager)
-    {
+    public function __construct(
+        $code,
+        $class,
+        $baseControllerName,
+        UserManager $fosUserManager,
+        RoleHierarchy $roleHierarchy
+    ) {
         parent::__construct($code, $class, $baseControllerName);
         $this->fosUserManager = $fosUserManager;
+        $this->roleHierarchy = $roleHierarchy;
     }
 
     public function preUpdate($user)
     {
+        if (!$this->isUserModificationAllowed()) {
+            throw new UserNotAllowedModificationException();
+        }
+
         $this->fosUserManager->updatePassword($user);
+    }
+
+    public function preRemove($user)
+    {
+        if (!$this->isUserModificationAllowed()) {
+            throw new UserNotAllowedModificationException();
+        }
     }
 
     protected function configureShowFields(ShowMapper $showMapper)
@@ -47,20 +68,58 @@ class UserAdmin extends AbstractAdmin
 
     protected function configureFormFields(FormMapper $formMapper)
     {
-        $formMapper
-            ->add('email')
-            ->add('enabled')
-            ->add('plainPassword', LegacyFormHelper::getType('Symfony\Component\Form\Extension\Core\Type\RepeatedType'), [
-                'type' => LegacyFormHelper::getType('Symfony\Component\Form\Extension\Core\Type\PasswordType'),
-                'options' => ['translation_domain' => 'FOSUserBundle'],
-                'first_options' => ['label' => 'form.password'],
-                'second_options' => ['label' => 'form.password_confirmation'],
-                'invalid_message' => 'fos_user.password.mismatch',
-                'required' => false
-            ])
-            ->add('roles')
-            //@TODO make it nicer (it works thoug currently)
-        ;
+        if ($this->isUserModificationAllowed()) {
+            $roles = (function() {return $this->hierarchy;})->bindTo($this->roleHierarchy, $this->roleHierarchy)();
+            if ($this->isGranted('ROLE_SUPER_ADMIN')) {
+                $filteredRoles = $this->getSuperAdminDropdownRoles($roles);
+            } else {
+                $filteredRoles = $this->getAdminDropdownRoles($roles);
+            }
+            $formMapper
+                ->add('email')
+                ->add('enabled')
+                ->add('plainPassword', LegacyFormHelper::getType('Symfony\Component\Form\Extension\Core\Type\RepeatedType'), [
+                    'type' => LegacyFormHelper::getType('Symfony\Component\Form\Extension\Core\Type\PasswordType'),
+                    'options' => ['translation_domain' => 'FOSUserBundle'],
+                    'first_options' => ['label' => 'form.password'],
+                    'second_options' => ['label' => 'form.password_confirmation'],
+                    'invalid_message' => 'fos_user.password.mismatch',
+                    'required' => false
+                ])
+                ->add('roles', 'choice', [
+                    'choices'  => $filteredRoles,
+                    'multiple' => true
+                ])
+            ;
+        } else {
+            throw new UserNotAllowedModificationException();
+        }
+    }
+
+    private function isUserModificationAllowed() {
+        $isEditingAdmin = $this->getSubject()->hasRole('ROLE_ADMIN') || $this->getSubject()->hasRole('ROLE_SUPER_ADMIN');
+        $isSuperAdmin = $this->isGranted('ROLE_SUPER_ADMIN');
+        return $isSuperAdmin || !$isEditingAdmin ? true : false;
+    }
+
+    private function getSuperAdminDropdownRoles($roles) {
+        $filteredRoles = array();
+        foreach($roles as $role => $subRoles) {
+            if(strpos($role, 'SONATA') === false && !isset($filteredRoles[$role])) {
+                $filteredRoles[$role] = $role;
+            }
+        }
+        return $filteredRoles;
+    }
+
+    private function getAdminDropdownRoles($roles) {
+        $filteredRoles = array();
+        foreach($roles as $role => $subRoles) {
+            if(strpos($role, 'SONATA') === false && strpos($role, 'ADMIN') === false && !isset($filteredRoles[$role])) {
+                $filteredRoles[$role] = $role;
+            }
+        }
+        return $filteredRoles;
     }
 
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
@@ -104,8 +163,12 @@ class UserAdmin extends AbstractAdmin
             ->add('_action', null, [
                 'actions' => [
                     'show' => [],
-                    'edit' => [],
-                    'delete' => [],
+                    'edit' => [
+                        'template' => 'SonataAdminBundle:UserList:action_edit.html.twig'
+                    ],
+                    'delete' => [
+                        'template' => 'SonataAdminBundle:UserList:action_delete.html.twig'
+                    ],
                     'impersonate' => [
                         'template' => 'SonataAdminBundle:UserList:action_impersonate.html.twig'
                     ]

@@ -53,7 +53,6 @@ services:
         class: AppBundle\EventListener\SwitchUserListener
         arguments:
             - "@security.authorization_checker"
-            - "@security.token_storage"
         tags:
             - { name: kernel.event_listener, event: security.switch_user, method: onSwitchUser }
 
@@ -68,6 +67,11 @@ services:
     # Sonata Admin classes
     admin.user:
         class: AppBundle\Admin\UserAdmin
-        arguments: [~, AppBundle\Entity\User, ~, "@fos_user.user_manager"]
+        arguments:
+            - ~
+            - AppBundle\Entity\User
+            - ~
+            - "@fos_user.user_manager"
+            - "@security.role_hierarchy"
         tags:
             - { name: sonata.admin, manager_type: orm, label: User }

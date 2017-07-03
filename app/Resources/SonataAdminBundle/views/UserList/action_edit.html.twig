@@ -1,0 +1,9 @@
+{% if admin.hasAccess('edit', object) and admin.hasRoute('edit') %}
+    {% if is_granted('ROLE_SUPER_ADMIN') or (not object.hasRole('ROLE_SUPER_ADMIN') and not object.hasRole('ROLE_ADMIN')) %}
+        <a href="{{ admin.generateObjectUrl('edit', object) }}" class="btn btn-sm btn-default edit_link" title="{{ 'action_edit'|trans({}, 'SonataAdminBundle') }}">
+            <i class="fa fa-pencil" aria-hidden="true"></i>
+            {{ 'action_edit'|trans({}, 'SonataAdminBundle') }}
+        </a>
+
+    {% endif %}
+{% endif %}

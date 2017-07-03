@@ -3,6 +3,7 @@ namespace AppBundle\EventSubscriber;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use AppBundle\Exception\SwitchUserNotAllowedException;
+use AppBundle\Exception\UserNotAllowedModificationException;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -28,11 +29,13 @@ class SuspiciousBehaviourSubscriber implements EventSubscriberInterface
 
     public function processException(GetResponseForExceptionEvent $event)
     {
-        if ($event->getException() instanceof SwitchUserNotAllowedException) {
-            var_dump('here create new redirect response');
-            $url = $this->router->generate('fos_user_security_logout');
-            $response = new RedirectResponse($url);
-            $event->setResponse($response);
+        switch (true) {
+            case ($event->getException() instanceof SwitchUserNotAllowedException):
+            case ($event->getException() instanceof UserNotAllowedModificationException):
+                $url = $this->router->generate('fos_user_security_logout');
+                $response = new RedirectResponse($url);
+                $event->setResponse($response);
+                break;
         }
     }
 }

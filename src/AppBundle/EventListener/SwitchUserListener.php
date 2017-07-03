@@ -9,12 +9,10 @@ use AppBundle\Exception\SwitchUserNotAllowedException;
 class SwitchUserListener
 {
     private $authorizationChecker;
-    private $tokenStorage;
 
-    public function __construct(AuthorizationCheckerInterface $authorizationChecker, TokenStorageInterface $tokenStorage)
+    public function __construct(AuthorizationCheckerInterface $authorizationChecker)
     {
         $this->authorizationChecker = $authorizationChecker;
-        $this->tokenStorage = $tokenStorage;
     }
 
     public function onSwitchUser(SwitchUserEvent $event)
