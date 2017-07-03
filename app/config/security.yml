@@ -5,20 +5,29 @@ security:
         FOS\UserBundle\Model\UserInterface: bcrypt
 
     role_hierarchy:
-        ROLE_ADMIN_READER:
+        ROLE_SONATA_ADMIN_BASIC:
             - ROLE_ADMIN_USER_LIST
             - ROLE_ADMIN_USER_VIEW
-        ROLE_ADMIN_EDITOR:
-#            - ROLE_ADMIN_USER_EDIT
-        ROLE_ADMIN_UNHARMFUL:
             - ROLE_ADMIN_USER_EXPORT
-        ROLE_ADMIN_RESTRICTED:
-#            - ROLE_ADMIN_USER_DELETE
+        ROLE_SONATA_ADMIN_ADVANCED:
+            - ROLE_ADMIN_USER_EDIT
+            - ROLE_ADMIN_USER_DELETE
 
-        ROLE_TRANSLATOR:  ROLE_USER
-        ROLE_SUPPORT:     [ROLE_USER, ROLE_SONATA_ADMIN, ROLE_ADMIN_READER, ROLE_ADMIN_UNHARMFUL, ROLE_ALLOWED_TO_SWITCH]
-        ROLE_ADMIN:       [ROLE_USER, ROLE_TRANSLATOR, ROLE_SUPPORT, ROLE_ADMIN_EDITOR]
-        ROLE_SUPER_ADMIN: ROLE_ADMIN
+        ROLE_USER: ~
+        ROLE_TRANSLATOR:
+            - ROLE_USER
+        ROLE_SUPPORT:
+            - ROLE_USER
+            - ROLE_SONATA_ADMIN # displays sonata menu dropdown
+            - ROLE_SONATA_ADMIN_BASIC
+            - ROLE_ALLOWED_TO_SWITCH
+        ROLE_ADMIN:
+            - ROLE_USER
+            - ROLE_TRANSLATOR
+            - ROLE_SUPPORT
+            - ROLE_SONATA_ADMIN_ADVANCED
+        ROLE_SUPER_ADMIN:
+            - ROLE_ADMIN
 
     # http://symfony.com/doc/current/security.html#b-configuring-how-users-are-loaded
     providers:
