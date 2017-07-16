@@ -13,6 +13,7 @@ use Sonata\DoctrineORMAdminBundle\Filter\CallbackFilter;
 use Symfony\Component\Security\Core\Role\RoleHierarchy;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use AppBundle\Exception\UserNotAllowedModificationException;
+use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
 
 class UserAdmin extends AbstractAdmin
 {
@@ -50,6 +51,21 @@ class UserAdmin extends AbstractAdmin
     {
         if (!$this->isUserModificationAllowed()) {
             throw new UserNotAllowedModificationException();
+        }
+    }
+
+    public function preBatchAction($actionName, ProxyQueryInterface $query, array & $idx, $allElements) {
+        if ($actionName === 'delete' && $allElements !== false) {
+            throw new UserNotAllowedModificationException();
+        }
+
+        if (!$this->loggedInAsSuperAdmin()) {
+            foreach ($idx as $id) {
+                $user = $this->fosUserManager->findUserBy(['id' => $id]);
+                if ($this->isEditingAdmin($user)) {
+                    throw new UserNotAllowedModificationException();
+                }
+            }
         }
     }
 
@@ -97,9 +113,17 @@ class UserAdmin extends AbstractAdmin
     }
 
     private function isUserModificationAllowed() {
-        $isEditingAdmin = $this->getSubject()->hasRole('ROLE_ADMIN') || $this->getSubject()->hasRole('ROLE_SUPER_ADMIN');
-        $isSuperAdmin = $this->isGranted('ROLE_SUPER_ADMIN');
-        return $isSuperAdmin || !$isEditingAdmin ? true : false;
+        $isEditingAdmin = $this->isEditingAdmin($this->getSubject());
+        $loggedInAsSuperAdmin = $this->loggedInAsSuperAdmin();
+        return $loggedInAsSuperAdmin || !$isEditingAdmin ? true : false;
+    }
+
+    private function isEditingAdmin($user) {
+        return $user->hasRole('ROLE_ADMIN') || $user->hasRole('ROLE_SUPER_ADMIN');
+    }
+
+    private function loggedInAsSuperAdmin() {
+        return $this->isGranted('ROLE_SUPER_ADMIN');
     }
 
     private function getSuperAdminDropdownRoles($roles) {
@@ -140,7 +164,7 @@ class UserAdmin extends AbstractAdmin
             return;
         } elseif (false !== strpos('user', strtolower($value['value']))) {
             $queryBuilder->andWhere(
-                //only ROLE_USER which is not mentioned in fos_user table
+                //only ROLE_USER -> which is mentioned in fos_user table as serialized empty array
                 $queryBuilder->expr()->eq($alias .'.' . $field, $queryBuilder->expr()->literal('a:0:{}'))
             );
         } else {
