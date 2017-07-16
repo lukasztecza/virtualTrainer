@@ -29,6 +29,7 @@ class SuspiciousBehaviourSubscriber implements EventSubscriberInterface
 
     public function processException(GetResponseForExceptionEvent $event)
     {
+    //@TODO instead of logging out redirect to dashboard and set flash message action not allowed
         switch (true) {
             case ($event->getException() instanceof SwitchUserNotAllowedException):
             case ($event->getException() instanceof UserNotAllowedModificationException):
