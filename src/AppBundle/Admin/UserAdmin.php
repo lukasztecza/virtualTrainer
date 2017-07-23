@@ -12,7 +12,8 @@ use FOS\UserBundle\Model\UserManager;
 use Sonata\DoctrineORMAdminBundle\Filter\CallbackFilter;
 use Symfony\Component\Security\Core\Role\RoleHierarchy;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
-use AppBundle\Exception\UserNotAllowedModificationException;
+use AppBundle\Exception\ModifyUserNotAllowedException;
+use AppBundle\Exception\RemoveUserNotAllowedException;
 use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
 
 class UserAdmin extends AbstractAdmin
@@ -41,7 +42,7 @@ class UserAdmin extends AbstractAdmin
     public function preUpdate($user)
     {
         if (!$this->isUserModificationAllowed()) {
-            throw new UserNotAllowedModificationException();
+            throw new ModifyUserNotAllowedException();
         }
 
         $this->fosUserManager->updatePassword($user);
@@ -50,20 +51,24 @@ class UserAdmin extends AbstractAdmin
     public function preRemove($user)
     {
         if (!$this->isUserModificationAllowed()) {
-            throw new UserNotAllowedModificationException();
+            throw new RemoveUserNotAllowedException();
         }
     }
 
     public function preBatchAction($actionName, ProxyQueryInterface $query, array & $idx, $allElements) {
         if ($actionName === 'delete' && $allElements !== false) {
-            throw new UserNotAllowedModificationException();
+            throw new RemoveUserNotAllowedException();
         }
 
         if (!$this->loggedInAsSuperAdmin()) {
             foreach ($idx as $id) {
                 $user = $this->fosUserManager->findUserBy(['id' => $id]);
                 if ($this->isEditingAdmin($user)) {
-                    throw new UserNotAllowedModificationException();
+                    if ($actionName === 'delete') {
+                        throw new RemoveUserNotAllowedException();
+                    } else {
+                        throw new ModifyUserNotAllowedException();
+                    }
                 }
             }
         }
@@ -108,7 +113,7 @@ class UserAdmin extends AbstractAdmin
                 ])
             ;
         } else {
-            throw new UserNotAllowedModificationException();
+            throw new ModifyUserNotAllowedException();
         }
     }
 

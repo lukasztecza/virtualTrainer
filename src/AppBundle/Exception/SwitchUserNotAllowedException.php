@@ -6,7 +6,7 @@ class SwitchUserNotAllowedException extends \Exception implements AppBundleExcep
     protected $message;
     protected $code;
 
-    public function __construct($message = 'Attempt to impersonate user which is not ROLE_USER only', $code = 403) {
+    public function __construct($message = 'Unauthorized attempt to impersonate user.', $code = 403) {
         $this->message = $message;
         $this->code = $code;
     }
